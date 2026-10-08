@@ -1,0 +1,65 @@
+---
+description: Project conventions and how the coding agent should work in this repo
+alwaysApply: true
+---
+
+# Project rules
+
+## How we work
+- I own the design: data model, endpoints, file structure, and approach.
+- You implement what I ask. Don't choose an architecture, add features,
+  or make improvements I didn't ask for.
+- If a request is ambiguous or seems wrong, ask a short question instead of guessing.
+  If you see a bug or a better approach, say so in one sentence, then wait.
+
+## Size of each change
+- One small step per request. Aim for under ~40 lines changed.
+- Only touch the files I name. If another file must change, ask first.
+- Never rewrite or reformat whole files. Don't rename or move things unless asked.
+- Don't refactor code unrelated to the request.
+- Stop after the step. Don't continue to the next one until I say so.
+
+## Before writing code
+- If a change touches more than one file, first list the files and
+  what changes in each (2-4 bullets), then wait for my go-ahead.
+
+## After each change, reply with
+1. What changed: file + one line per change.
+2. How to verify: the exact URL, curl command, or test to run.
+3. Assumptions or anything you're unsure about (or "none").
+
+## Stack
+- Java 17, Spring Boot 4, Maven wrapper (./mvnw).
+- Base package com.example.demo, with subpackages controller, service, model, repository.
+- Frontend: plain HTML, CSS, JavaScript in src/main/resources/static.
+  No frontend frameworks, no npm, no build step.
+- Persistence when needed: H2 with Spring Data JPA.
+- Tests: JUnit 5; MockMvc for controllers.
+- Don't add dependencies to pom.xml without asking.
+
+## Backend conventions
+- Controllers are thin: parse the request, call the service, return the result.
+- Business rules live in model and service classes, never in controllers.
+- REST endpoints under /api, returning JSON.
+- Use Java records for request and response bodies.
+- Models and services throw IllegalArgumentException (400) or IllegalStateException (409);
+       one @RestControllerAdvice turns them into {"message": "..."}.
+- Status codes: 201 create, 400 bad input, 404 not found, 409 conflict.
+- Shared in-memory state uses thread-safe structures (ConcurrentHashMap).
+
+## Frontend conventions
+- Use the api(method, url, body) helper in app.js for every request.
+- Redraw from server state with a render(state) function; business rules
+  stay on the server.
+- Use textContent for user-provided text, never innerHTML.
+- Show API errors on the page.
+- Keep app.js simple: functions and event listeners, no classes or modules.
+
+## Correctness
+- Never invent methods, classes, or library APIs. If unsure something exists, say so.
+- Handle the edge cases I name. Don't skip validation.
+- When asked for tests, write focused tests for the rule in question and run ./mvnw test.
+
+## Commands
+- No destructive commands (rm -rf, git reset --hard, git push --force).
+- Don't commit or push unless asked.
